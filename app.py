@@ -15,7 +15,7 @@ def home():
 		qts = request.form["qts"]
 		qts = qts.strip().lower()
 		texts = [qts] + data["question"].str.lower().tolist()
-		cv = CountVectorizer()
+		cv = CountVectorizer(stop_words="english")
 		vector = cv.fit_transform(texts)
 		cs = cosine_similarity(vector)
 		score = cs[0][1:]
@@ -23,7 +23,7 @@ def home():
 		result = data.sort_values(by="score", ascending=False)
 		result = result[result.score > 10]
 		if len(result) == 0:
-			msg = "Sorry i dont know, please contact my master"
+			msg = "I'm sorry, I didn't quite catch that. My knowledge is specifically focused on Soham's professional portfolio. Would you like to hear about his technical skills, his latest projects, or his engineering degree?"
 		else:
 			ans = result.head(1)["answer"].values[0]
 			msg = ans
