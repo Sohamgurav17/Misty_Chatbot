@@ -46,7 +46,8 @@
             background-color: var(--bg-main);
             color: var(--text-main);
             display: flex;
-            height: 100vh;
+            height: 100vh; /* Fallback for older browsers */
+            height: 100dvh; /* Crucial fix for mobile address bar overlap */
             overflow: hidden;
         }
 
@@ -91,7 +92,7 @@
             display: flex;
             flex-direction: column;
             background-color: var(--chat-bg);
-            height: 100vh;
+            height: 100%; /* Fix: Was 100vh, causing it to push down out of frame */
             position: relative;
         }
 
@@ -257,14 +258,18 @@
             .sidebar { display: none; }
             
             .chat-header { padding: 16px 20px; }
+            
+            /* Reduced padding on mobile so content isn't squished */
             .chat-history { padding: 20px 16px; gap: 20px; }
             .message-content { max-width: 90%; }
             .suggestions-container { margin-left: 0; justify-content: flex-start; }
             
             /* Fix the input area for mobile screens */
             .input-container { 
-                padding: 16px; 
-                background: var(--bg-main); 
+                padding: 12px 16px; 
+                /* Adds safety buffer for iOS Home bar */
+                padding-bottom: calc(16px + env(safe-area-inset-bottom)); 
+                background: var(--chat-bg); 
             }
             .input-form { border-radius: 24px; }
         }
@@ -389,8 +394,10 @@
             container.appendChild(row);
         }
 
-        // Auto-scroll to bottom
-        container.scrollTop = container.scrollHeight;
+        // Auto-scroll to bottom smoothly
+        setTimeout(() => {
+            container.scrollTop = container.scrollHeight;
+        }, 10);
     }
 
     // Run render on page load
